@@ -7,10 +7,8 @@
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignParentBottom="true"
     android:layout_alignParentStart="true"
-    android:layout_marginBottom="147dp">
-
+    android:layout_alignParentBottom="true">
         />
 
     <TableLayout
@@ -21,7 +19,7 @@
         <TableRow>
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="필수입력사항"
                 android:textSize="15dp"
                 android:textColor="#0088ff"

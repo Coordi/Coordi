@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -20,12 +19,10 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-
-
 public class LoginActivity extends ActionBarActivity {
 
-    RelativeLayout loginLayout;
-    RelativeLayout enrollLayout;
+    View loginLayout;
+    View enrollLayout;
 
     EditText id;
     EditText pw;
@@ -39,14 +36,22 @@ public class LoginActivity extends ActionBarActivity {
     Button enrollBt;
     Button compBt;
 
+    public boolean enroll_view = false;
+
+    private final long	FINSH_INTERVAL_TIME    = 2000;
+    private long		backPressedTime        = 0;
+
     private String return_msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         final Context context = this;
 
+        loginLayout = (View) findViewById(R.id.loginLayout);
+        enrollLayout = (View) findViewById(R.id.enrollLayout);
         id = (EditText) findViewById(R.id.Email);
         pw = (EditText) findViewById(R.id.PW);
         newEmail = (EditText) findViewById(R.id.new_Email);
@@ -58,76 +63,94 @@ public class LoginActivity extends ActionBarActivity {
         enrollBt = (Button) findViewById(R.id.EnrollBt);
         compBt=(Button) findViewById(R.id.Comp_Bt);
 
-        loginBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    String Email = id.getText().toString();
-                    String Pw = pw.getText().toString();
-                    String message = Email + "/" + Pw;
-
-                    TCPclient tcpThread = new TCPclient(message);
-
-                    Thread thread = new Thread(tcpThread);
-
-                    thread.start();
-                } catch (Exception e) {
-
-                }
-            }
-        });
+//        loginBt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                try {
+//                    String Email = id.getText().toString();
+//                    String Pw = pw.getText().toString();
+//                    String message = Email + "/" + Pw;
+//
+//                    TCPclient tcpThread = new TCPclient(message);
+//
+//                    Thread thread = new Thread(tcpThread);
+//
+//                    thread.start();
+//                } catch (Exception e) {
+//
+//                }
+//            }
+//        });
 
         loginBt.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-
-
-                // 디비 연동 후 아이디 비번 체크
-
-                String Email = id.getText().toString();
-                String Pw = pw.getText().toString();
-                if (Email.equals("admin@naver.com")) {
-                    if (Pw.equals("1q2w3e")) {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "비밀번호가 틀렸습니다. ", Toast.LENGTH_LONG).show();
-                    }
-
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
-                }
-
+                LoginBtClicked();
             }
         });
 
         enrollBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setContentView(R.layout.activity_enroll);
+                //setContentView(R.layout.activity_enroll);
+                EnrollBtClicked();
             }
         });
     }
 
     public void LoginBtClicked() {
+        // 디비 연동 후 아이디 비번 체크
 
+        String Email = id.getText().toString();
+        String Pw = pw.getText().toString();
+        if (Email.equals("admin@naver.com")) {
+            if (Pw.equals("1q2w3e")) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "비밀번호가 틀렸습니다. ", Toast.LENGTH_LONG).show();
+            }
+
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
+        }
     }
-
 
     public void EnrollBtClicked(){
-//        RelativeLayout enrollLayout = (RelativeLayout) findViewById(R.id.enrollLayout);
-//        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        inflater.inflate(R.layout.activity_enroll, enrollLayout, true);
         loginLayout.setVisibility(View.INVISIBLE);
         enrollLayout.setVisibility(View.VISIBLE);
+
+        enroll_view = true;
     }
+
     public void CompBtClicked(){
 
-
-
     }
+
+    @Override
+    public void onBackPressed() {
+        long tempTime        = System.currentTimeMillis();
+        long intervalTime    = tempTime - backPressedTime;
+
+        if (enroll_view)
+        {
+            loginLayout.setVisibility(View.VISIBLE);
+            enrollLayout.setVisibility(View.INVISIBLE);
+
+            enroll_view = false;
+        }else {
+            if (0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime) {
+                super.onBackPressed();
+            } else {
+                backPressedTime = tempTime;
+                Toast.makeText(getApplicationContext(), "'뒤로'버튼을한번더누르시면종료됩니다.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
