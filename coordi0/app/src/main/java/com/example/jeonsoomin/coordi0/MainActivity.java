@@ -2,14 +2,16 @@ package com.example.jeonsoomin.coordi0;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
-
+    public static TextView cur;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        cur = (TextView)findViewById(R.id.tv);
     }
 
 

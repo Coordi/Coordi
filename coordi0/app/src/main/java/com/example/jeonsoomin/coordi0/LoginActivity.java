@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,15 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-
 public class LoginActivity extends ActionBarActivity {
-
     View loginLayout;
     View enrollLayout;
 
@@ -43,10 +34,14 @@ public class LoginActivity extends ActionBarActivity {
 
     private String return_msg;
 
+    private SocClient mClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mClient = new SocClient();
+        Thread myThready = new Thread(mClient);
 
         final Context context = this;
 
@@ -63,24 +58,12 @@ public class LoginActivity extends ActionBarActivity {
         enrollBt = (Button) findViewById(R.id.EnrollBt);
         compBt=(Button) findViewById(R.id.Comp_Bt);
 
-//        loginBt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    String Email = id.getText().toString();
-//                    String Pw = pw.getText().toString();
-//                    String message = Email + "/" + Pw;
-//
-//                    TCPclient tcpThread = new TCPclient(message);
-//
-//                    Thread thread = new Thread(tcpThread);
-//
-//                    thread.start();
-//                } catch (Exception e) {
-//
-//                }
-//            }
-//        });
+        loginBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         loginBt.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -98,25 +81,32 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void LoginBtClicked() {
-        // 디비 연동 후 아이디 비번 체크
-
         String Email = id.getText().toString();
         String Pw = pw.getText().toString();
         if (Email.equals("admin@naver.com")) {
             if (Pw.equals("1q2w3e")) {
+                String message = Email + "/" + Pw;
+                mClient.send(message);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
-            else{
+
+            else {
                 Toast.makeText(getApplicationContext(), "비밀번호가 틀렸습니다. ", Toast.LENGTH_LONG).show();
             }
-
         }
         else
         {
             Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
         }
+
+
     }
+        /*
+        // 디비 연동 후 아이디 비번 체크
+
+    }
+    */
 
     public void EnrollBtClicked(){
         loginLayout.setVisibility(View.INVISIBLE);
@@ -172,73 +162,4 @@ public class LoginActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    private class TCPclient implements Runnable {
-
-        private static final String serverIP = "127.0.0.1"; // 서버 아이피
-
-        private static final int serverPort = 4444; // ex: 5555 // 접속 포트
-
-        private Socket inetSocket = null;
-
-        private String msg;
-        // private String return_msg;
-
-        public TCPclient(String _msg) {
-
-            this.msg = _msg;
-
-        }
-        public void run() {
-
-            // TODO Auto-generated method stub
-
-            try {
-
-                Log.d("TCP", "C: Connecting...");
-                inetSocket = new Socket(serverIP ,serverPort);
-
-                //inetSocket.connect(socketAddr);
-                try {
-                    Log.d("TCP", "C: Sending: '" + msg + "'");
-
-                    PrintWriter out = new PrintWriter(
-
-                            new BufferedWriter(new OutputStreamWriter(
-
-                                    inetSocket.getOutputStream())), true);
-                    out.println(msg);
-
-                    Log.d("TCP", "C: Sent.");
-
-                    Log.d("TCP", "C: Done.");
-                    BufferedReader in = new BufferedReader(
-
-                            new InputStreamReader(inetSocket.getInputStream()));
-
-                    return_msg = in.readLine();
-                    Log.d("TCP", "C: Server send to me this message -->"
-
-                            + return_msg);
-
-                } catch (Exception e) {
-
-                    Log.e("TCP", "C: Error1", e);
-
-                } finally {
-
-                    inetSocket.close();
-
-                }
-
-            } catch (Exception e) {
-
-                Log.e("TCP", "C: Error2", e);
-
-            }
-
-        }// run
-
-    }// TCPclient
-
 }

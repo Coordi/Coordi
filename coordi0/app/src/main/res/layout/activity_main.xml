@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="메인Activity"
-        android:id="@+id/textView"
+        android:id="@+id/tv"
         android:textSize="33dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
