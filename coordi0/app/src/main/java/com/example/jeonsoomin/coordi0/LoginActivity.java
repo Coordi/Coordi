@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 public class LoginActivity extends ActionBarActivity {
     View loginLayout;
     View enrollLayout;
@@ -40,8 +39,11 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+//        Intent temp = new Intent(getApplicationContext(), SocClient.class);
+//        startActivity(temp);
+
         mClient = new SocClient();
-        Thread myThready = new Thread(mClient);
+        Thread myThread = new Thread(mClient);
 
         final Context context = this;
 
@@ -58,23 +60,14 @@ public class LoginActivity extends ActionBarActivity {
         enrollBt = (Button) findViewById(R.id.EnrollBt);
         compBt=(Button) findViewById(R.id.Comp_Bt);
 
-        loginBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         loginBt.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 LoginBtClicked();
             }
         });
-
         enrollBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //setContentView(R.layout.activity_enroll);
                 EnrollBtClicked();
             }
         });
@@ -98,15 +91,9 @@ public class LoginActivity extends ActionBarActivity {
         else
         {
             Toast.makeText(getApplicationContext(), "이메일이 틀렸습니다. ", Toast.LENGTH_LONG).show();
-        }
-
-
-    }
-        /*
-        // 디비 연동 후 아이디 비번 체크
+        } // 서버 전
 
     }
-    */
 
     public void EnrollBtClicked(){
         loginLayout.setVisibility(View.INVISIBLE);
@@ -135,7 +122,7 @@ public class LoginActivity extends ActionBarActivity {
                 super.onBackPressed();
             } else {
                 backPressedTime = tempTime;
-                Toast.makeText(getApplicationContext(), "'뒤로'버튼을한번더누르시면종료됩니다.",
+                Toast.makeText(getApplicationContext(), "'뒤로'버튼을 한번 더 누르시면 종료됩니다.",
                         Toast.LENGTH_SHORT).show();
             }
         }
