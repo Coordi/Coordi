@@ -37,13 +37,19 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
 
+<<<<<<< HEAD
 //        Intent temp = new Intent(getApplicationContext(), SocClient.class);
 //        startActivity(temp);
 
         mClient = new SocClient();
         Thread myThread = new Thread(mClient);
+=======
+//        ActionBar actionBar = getActionBar();
+//        actionBar.hide();
+>>>>>>> origin/master
 
         final Context context = this;
 
@@ -67,8 +73,18 @@ public class LoginActivity extends ActionBarActivity {
         });
         enrollBt.setOnClickListener(new View.OnClickListener() {
             @Override
+<<<<<<< HEAD
             public void onClick(View view) {
+=======
+            public void onClick(View v) {
+>>>>>>> origin/master
                 EnrollBtClicked();
+            }
+        });
+        compBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CompBtClicked();
             }
         });
     }
@@ -103,7 +119,8 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void CompBtClicked(){
-
+        Toast.makeText(getApplicationContext(), "입력되지 않은 항목이 있습니다. ",
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
